@@ -1,5 +1,3 @@
-const lines = Deno.readTextFileSync('input.txt').split('\n');
-
 const movesA = {
   rock: 'A',
   paper: 'B',
@@ -115,6 +113,10 @@ export function getSolutionPart2(lines: string[]) {
 }
 
 const part = Deno.env.get('part') || 'part1';
+const lines = Deno.readTextFileSync('input.txt').split('\n');
 
-if (part === 'part1') console.log(getSolutionPart1(lines));
-else console.log(getSolutionPart2(lines));
+let answer;
+if (part === 'part1') answer = getSolutionPart1(lines);
+if (part === 'part2') answer = getSolutionPart2(lines);
+
+console.log(answer);
