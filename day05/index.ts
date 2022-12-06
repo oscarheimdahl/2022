@@ -59,12 +59,12 @@ export function getSolutionPart1(lines: string[]) {
     for (let i = 0; i < amount; i++) {
       const crate = stacks[from - 1].shift() as string;
       stacks[to - 1].unshift(crate);
-      // printStacks(JSON.stringify(stacks));
+      printStacks(JSON.stringify(stacks));
     }
   });
-  // const encoder = new TextEncoder();
-  // const data = encoder.encode(JSON.stringify({ frames }));
-  // Deno.writeFileSync('hello1.txt', data);
+  const encoder = new TextEncoder();
+  const data = encoder.encode(JSON.stringify({ frames }));
+  Deno.writeFileSync('frames.txt', data);
 
   return stacks.map((stack) => stack[0]).join('');
 }
