@@ -1,3 +1,36 @@
+const frames: string[] = [];
+let q = 0;
+const printStacks = (stacksStr: string) => {
+  const stacks: string[][] = JSON.parse(stacksStr);
+  const max = stacks.reduce((prev, curr) => Math.max(prev, curr.length), 0);
+  stacks.forEach((stack) => {
+    const diff = max - stack.length;
+    for (let i = 0; i < diff; i++) {
+      stack.unshift('');
+    }
+  });
+
+  let bufferPrint = '';
+  let bufferFrame = '';
+
+  for (let y = 0; y < max; y++) {
+    for (let x = 0; x < stacks.length; x++) {
+      const cell = stacks[x][y];
+      if (!cell) {
+        bufferPrint += '    ';
+        bufferFrame += ' ';
+      } else {
+        bufferPrint += `[${cell}] `;
+        bufferFrame += cell;
+      }
+    }
+    bufferPrint += '\n';
+    bufferFrame += '\n';
+  }
+
+  frames.push(bufferFrame);
+};
+
 export function getSolutionPart1(lines: string[]) {
   let readingCrates = true;
   const cols = (lines[0].length + 1) / 4;
@@ -5,7 +38,10 @@ export function getSolutionPart1(lines: string[]) {
 
   lines.forEach((line) => {
     if (!line) return;
-    if (line.startsWith(' 1')) return (readingCrates = false);
+    if (line.startsWith(' 1')) {
+      readingCrates = false;
+      return;
+    }
 
     if (readingCrates) {
       let crateStart = -1;
@@ -23,8 +59,12 @@ export function getSolutionPart1(lines: string[]) {
     for (let i = 0; i < amount; i++) {
       const crate = stacks[from - 1].shift() as string;
       stacks[to - 1].unshift(crate);
+      // printStacks(JSON.stringify(stacks));
     }
   });
+  // const encoder = new TextEncoder();
+  // const data = encoder.encode(JSON.stringify({ frames }));
+  // Deno.writeFileSync('hello1.txt', data);
 
   return stacks.map((stack) => stack[0]).join('');
 }
