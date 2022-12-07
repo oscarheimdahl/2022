@@ -28,7 +28,14 @@ const input = [
   '5626152 d.ext',
   '7214296 k',
 ];
-Deno.test('Test input should be 95437', () => {
-  const res = getSolutionPart1(input);
-  assertEquals(res, 95437);
+// Deno.test('Test input should be 95437', () => {
+//   const res = getSolutionPart1(input);
+//   assertEquals(res, 95437);
+// });
+
+// Part 2
+
+Deno.test('Test input should be 24933642', () => {
+  const res = getSolutionPart2(input);
+  assertEquals(res, 24933642);
 });

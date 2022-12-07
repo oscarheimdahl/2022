@@ -53,7 +53,6 @@ export function getSolutionPart1(lines: string[]) {
 
   const traverseAndCount = (node: Dir | string, acc: number, addNodes: boolean) => {
     let sum = 0;
-
     Object.values(node).forEach((subNode) => {
       const isFile = typeof subNode === 'string';
       if (isFile) {
@@ -63,7 +62,6 @@ export function getSolutionPart1(lines: string[]) {
         if (addNodes) nodes.push(subNode);
       }
     });
-
     return sum + acc;
   };
 
@@ -77,7 +75,43 @@ export function getSolutionPart1(lines: string[]) {
   return sum;
 }
 
-export function getSolutionPart2(lines: string[]) {}
+export function getSolutionPart2(lines: string[]) {
+  const totalSize = 70000000;
+  const updateSize = 30000000;
+  const tree = buildTree(lines);
+
+  const nodes: Dir[] = [tree as Dir];
+
+  const traverseAndCount = (node: Dir | string, acc: number, addNodes: boolean) => {
+    let sum = 0;
+    Object.values(node).forEach((subNode) => {
+      const isFile = typeof subNode === 'string';
+      if (isFile) {
+        sum += +subNode;
+      } else {
+        sum += traverseAndCount(subNode, 0, false);
+        if (addNodes) nodes.push(subNode);
+      }
+    });
+    return sum + acc;
+  };
+
+  let spaceNeeded = 0;
+  let smallestOkDir = Infinity;
+  let rootSize = null;
+  do {
+    const dirSize = traverseAndCount(nodes[0] as Dir, 0, true);
+    if (!rootSize) {
+      rootSize = dirSize;
+      spaceNeeded = updateSize - (totalSize - rootSize);
+    } else if (dirSize !== rootSize && dirSize >= spaceNeeded) {
+      smallestOkDir = Math.min(dirSize, smallestOkDir);
+    }
+    nodes.shift();
+  } while (nodes.length > 0);
+
+  return smallestOkDir;
+}
 
 const part = Deno.env.get('part') || 'part1';
 const lines = Deno.readTextFileSync('input.txt').split('\n');
