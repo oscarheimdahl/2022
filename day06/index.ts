@@ -67,6 +67,5 @@ const lines = Deno.readTextFileSync('input.txt').split('\n');
 let answer;
 if (part === 'part1') answer = getSolutionPart1(lines);
 if (part === 'part2') answer = getSolutionPart2(lines);
-// console.log(Array.from(Array(2), () => 0).map(() => 'color: red'));
 
 console.log(answer);
