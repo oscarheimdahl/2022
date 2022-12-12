@@ -56,42 +56,55 @@ export function getSolutionPart1(lines: string[]) {
   return tailPositions.size;
 }
 
-export function getSolutionPart2(lines: string[]) {
+export async function getSolutionPart2(lines: string[]) {
   const H = { x: 0, y: 0 };
   const T = [...Array(9)].map(() => ({ ...H }));
   const tailPositions = new Set<string>();
 
-  // let q = 0;
-  // async function printGrid() {
-  //   q++;
-  //   await new Promise((res) => {
-  //     setTimeout(() => {
-  //       console.clear();
-  //       for (let y = -15; y <= 5; y++) {
-  //         let buffer = '';
-  //         for (let x = -11; x < 15; x++) {
-  //           let drawn = false;
-  //           if (x === H.x && y === H.y) {
-  //             buffer += 'H';
-  //             drawn = true;
-  //           } else {
-  //             for (let s = 0; s < T.length; s++) {
-  //               if (x === T[s].x && y === T[s].y && !drawn) {
-  //                 buffer += s + 1;
-  //                 drawn = true;
-  //               }
-  //             }
-  //           }
-  //           if (!drawn) buffer += '.';
-  //           buffer += ' ';
-  //         }
-  //         console.log(buffer);
-  //       }
-  //       console.log();
-  //       res(1);
-  //     }, q);
-  //   });
-  // }
+  let q = 0;
+  async function printGrid() {
+    q++;
+    await new Promise((res) => {
+      setTimeout(() => {
+        let buffer = '';
+        for (let y = T[8].y - 40; y <= T[8].y + 40; y++) {
+          let rowBuffer = '';
+          for (let x = T[8].x - 60; x < T[8].x + 60; x++) {
+            let drawn = false;
+            let wide = false;
+            if (x === H.x && y === H.y) {
+              rowBuffer += '🔺';
+              wide = true;
+              drawn = true;
+            } else if (tailPositions.has(`${x},${y}`)) {
+              rowBuffer += '#';
+              drawn = true;
+            } else {
+              for (let s = 0; s < T.length; s++) {
+                if (x === T[s].x && y === T[s].y && !drawn) {
+                  rowBuffer += '🔸'; // s + 1;
+                  wide = true;
+                  drawn = true;
+                }
+              }
+            }
+            if (!drawn) rowBuffer += ' ';
+            if (!wide) rowBuffer += ' ';
+          }
+          buffer += '│' + rowBuffer + '│' + '\n';
+        }
+        console.clear();
+        console.log(
+          `┌––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––┐`
+        );
+        console.log(buffer.slice(0, -1));
+        console.log(
+          `└––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––┘`
+        );
+        res(1);
+      }, q / 10);
+    });
+  }
 
   function moveHead(dir: Direction) {
     if (dir === 'R') H.x++;
@@ -123,19 +136,20 @@ export function getSolutionPart2(lines: string[]) {
     return Tpart;
   }
 
-  // await printGrid();
-  lines.forEach((line) => {
-    const [dir, steps] = line.split(' ');
+  await printGrid();
+  // lines.forEach((line) => {
+  for (let k = 0; k < lines.length; k++) {
+    const [dir, steps] = lines[k].split(' ');
     for (let i = 0; i < +steps; i++) {
       moveHead(dir as Direction);
-
       for (let j = 0; j < T.length; j++) {
-        // await printGrid();
         T[j] = { ...moveTail(j) };
       }
       tailPositions.add(`${T[T.length - 1].x},${T[T.length - 1].y}`);
     }
-  });
+    await printGrid();
+  }
+  // });
   return tailPositions.size;
 }
 
